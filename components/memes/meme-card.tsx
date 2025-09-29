@@ -6,6 +6,7 @@ import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { TimeAgo } from '@/components/ui/time-ago'
 import { Heart, MessageCircle, Share2, MoveHorizontal as MoreHorizontal, Eye, EyeOff, Flag } from 'lucide-react'
 import {
   DropdownMenu,
@@ -83,17 +84,6 @@ export function MemeCard({
     }
   }
 
-  const formatTimeAgo = (dateString: string) => {
-    const date = new Date(dateString)
-    const now = new Date()
-    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
-
-    if (diffInSeconds < 60) return 'just now'
-    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`
-    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`
-    if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)}d ago`
-    return date.toLocaleDateString()
-  }
 
   const canDelete = user && (user.id === post.author_id || user.role === 'ADMIN')
 
@@ -116,9 +106,10 @@ export function MemeCard({
               <span className="text-sm font-medium">
                 {post.author.username || post.author.name || 'Anonymous'}
               </span>
-              <span className="text-xs text-muted-foreground">
-                {formatTimeAgo(post.created_at)}
-              </span>
+              <TimeAgo
+                dateString={post.created_at}
+                className="text-xs text-muted-foreground"
+              />
             </div>
           </div>
 

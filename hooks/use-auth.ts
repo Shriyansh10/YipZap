@@ -56,15 +56,17 @@ export function useAuth() {
     getSession()
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (mounted) {
-          if (event === 'SIGNED_OUT') {
-            setUser(null)
-            setLoading(false)
-          } else if (session?.user) {
-            await fetchUserData(session.user)
+      (event, session) => {
+        (async () => {
+          if (mounted) {
+            if (event === 'SIGNED_OUT') {
+              setUser(null)
+              setLoading(false)
+            } else if (session?.user) {
+              await fetchUserData(session.user)
+            }
           }
-        }
+        })()
       }
     )
 
