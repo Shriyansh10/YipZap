@@ -101,7 +101,22 @@ export const AuthSchema = z.object({
 })
 
 export const RegisterSchema = AuthSchema.extend({
-  name: z.string().optional(),
+  username: z.string().min(3).max(30).regex(/^[a-zA-Z0-9_]+$/, {
+    message: 'Username can only contain letters, numbers, and underscores'
+  }),
+  dateOfBirth: z.string().refine((date) => {
+    const birthDate = new Date(date)
+    const today = new Date()
+    const age = today.getFullYear() - birthDate.getFullYear()
+    const monthDiff = today.getMonth() - birthDate.getMonth()
+
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      return age - 1 >= 13
+    }
+    return age >= 13
+  }, {
+    message: 'You must be at least 13 years old'
+  }),
 })
 
 export type MediaType = z.infer<typeof MediaTypeEnum>

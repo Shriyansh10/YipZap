@@ -57,7 +57,7 @@ export function LoginPromptModal({ open, onOpenChange }: LoginPromptModalProps) 
   const onSignUp = async (data: RegisterInput) => {
     setIsLoading(true)
     try {
-      const { error } = await signUpWithEmail(data.email, data.password, data.name)
+      const { error } = await signUpWithEmail(data.email, data.password, data.username, data.dateOfBirth)
       if (error) {
         toast.error(error.message)
       } else {
@@ -186,13 +186,18 @@ export function LoginPromptModal({ open, onOpenChange }: LoginPromptModalProps) 
             <TabsContent value="signup" className="space-y-4">
               <form onSubmit={signupForm.handleSubmit(onSignUp)} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="signup-name">Name (optional)</Label>
+                  <Label htmlFor="signup-username">Username</Label>
                   <Input
-                    id="signup-name"
+                    id="signup-username"
                     type="text"
-                    placeholder="Your Name"
-                    {...signupForm.register('name')}
+                    placeholder="your_username"
+                    {...signupForm.register('username')}
                   />
+                  {signupForm.formState.errors.username && (
+                    <p className="text-sm text-red-500">
+                      {signupForm.formState.errors.username.message}
+                    </p>
+                  )}
                 </div>
 
                 <div className="space-y-2">
@@ -221,6 +226,20 @@ export function LoginPromptModal({ open, onOpenChange }: LoginPromptModalProps) 
                   {signupForm.formState.errors.password && (
                     <p className="text-sm text-red-500">
                       {signupForm.formState.errors.password.message}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="signup-dob">Date of Birth</Label>
+                  <Input
+                    id="signup-dob"
+                    type="date"
+                    {...signupForm.register('dateOfBirth')}
+                  />
+                  {signupForm.formState.errors.dateOfBirth && (
+                    <p className="text-sm text-red-500">
+                      {signupForm.formState.errors.dateOfBirth.message}
                     </p>
                   )}
                 </div>
