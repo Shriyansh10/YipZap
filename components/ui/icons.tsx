@@ -1,4 +1,4 @@
-import { LucideProps } from "lucide-react"
+import { TableProperties as LucideProps } from "lucide-react"
 
 export const Icons = {
   spinner: (props: LucideProps) => (
