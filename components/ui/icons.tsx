@@ -1,4 +1,4 @@
-import { Loader2, LucideProps } from "lucide-react"
+import { Loader as Loader2, TableProperties as LucideProps } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export const Icons = {
