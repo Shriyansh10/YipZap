@@ -1,47 +1,54 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 interface TimeAgoProps {
-  dateString: string
+  date: string | Date
   className?: string
 }
 
-export function TimeAgo({ dateString, className }: TimeAgoProps) {
-  const [timeAgo, setTimeAgo] = useState<string>('')
-  const [mounted, setMounted] = useState(false)
+export function TimeAgo({ date, className }: TimeAgoProps) {
+  const [timeAgo, setTimeAgo] = useState('')
 
   useEffect(() => {
-    setMounted(true)
-
-    const formatTimeAgo = (dateStr: string) => {
-      const date = new Date(dateStr)
+    const updateTimeAgo = () => {
       const now = new Date()
-      const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
+      const then = new Date(date)
+      const seconds = Math.floor((now.getTime() - then.getTime()) / 1000)
 
-      if (diffInSeconds < 60) return 'just now'
-      if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`
-      if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`
-      if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)}d ago`
-      return date.toLocaleDateString()
+      let interval = seconds / 31536000
+      if (interval > 1) {
+        setTimeAgo(Math.floor(interval) + 'y ago')
+        return
+      }
+      interval = seconds / 2592000
+      if (interval > 1) {
+        setTimeAgo(Math.floor(interval) + 'mo ago')
+        return
+      }
+      interval = seconds / 86400
+      if (interval > 1) {
+        setTimeAgo(Math.floor(interval) + 'd ago')
+        return
+      }
+      interval = seconds / 3600
+      if (interval > 1) {
+        setTimeAgo(Math.floor(interval) + 'h ago')
+        return
+      }
+      interval = seconds / 60
+      if (interval > 1) {
+        setTimeAgo(Math.floor(interval) + 'm ago')
+        return
+      }
+      setTimeAgo('Just now')
     }
 
-    const updateTime = () => {
-      setTimeAgo(formatTimeAgo(dateString))
-    }
+    updateTimeAgo()
+    const timer = setInterval(updateTimeAgo, 60000)
 
-    updateTime()
-
-    // Update every minute for accurate time display
-    const interval = setInterval(updateTime, 60000)
-
-    return () => clearInterval(interval)
-  }, [dateString])
-
-  // Avoid hydration mismatch by not rendering time until mounted
-  if (!mounted) {
-    return <span className={className}>&nbsp;</span>
-  }
+    return () => clearInterval(timer)
+  }, [date])
 
   return <span className={className}>{timeAgo}</span>
 }

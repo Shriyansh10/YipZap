@@ -107,7 +107,7 @@ export function MemeCard({
                 {post.author.username || post.author.name || 'Anonymous'}
               </span>
               <TimeAgo
-                dateString={post.created_at}
+                date={post.created_at}
                 className="text-xs text-muted-foreground"
               />
             </div>
